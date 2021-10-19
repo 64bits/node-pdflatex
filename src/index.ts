@@ -17,6 +17,7 @@ export type Options = {
   engine?: string
   texInputs?: string[]
   shellEscape?: boolean
+  runTwice?: boolean
 }
 
 /**
@@ -47,11 +48,12 @@ const createCommand = (options: Options) =>
  */
 const compile = async (tempPath: string, options: Options) => {
   try {
-    // Run twice to get rid of extra page
-    await exec(createCommand(options), {
-      cwd: tempPath,
-      env: createChildEnv(options.texInputs)
-    })
+    if (options.runTwice) {
+      await exec(createCommand(options), {
+        cwd: tempPath,
+        env: createChildEnv(options.texInputs)
+      })
+    }
     await exec(createCommand(options), {
       cwd: tempPath,
       env: createChildEnv(options.texInputs)
